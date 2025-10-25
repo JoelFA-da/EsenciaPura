@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.production
+coverage/
+
+# Prisma
+/src/generated/prisma
+prisma/*.db
+prisma/*.db-journal
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db

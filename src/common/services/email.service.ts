@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { logger } from '../utils/logger';
 import { env } from '../../config/index';
+
 export interface BookingEmailData {
   customerName: string;
   customerEmail: string;

@@ -231,22 +231,24 @@ model Service {
 }
 
 model Booking {
-  id            String   @id @default(cuid())
-  customerName  String
-  customerEmail String
-  customerPhone String
-  serviceId     String
-  service       Service  @relation(fields: [serviceId], references: [id])
-  date          DateTime
-  startTime     String   // "HH:mm"
-  endTime       String   // "HH:mm"
-  status        BookingStatus @default(PENDING)
-  notes         String?
-  createdAt     DateTime @default(now())
+  id               String   @id @default(cuid())
+  serviceId        String
+  service          Service  @relation(fields: [serviceId], references: [id])
+  date             DateTime
+  startTime        String   // "HH:mm"
+  endTime          String   // "HH:mm"
+  status           BookingStatus @default(PENDING)
+  formSubmissionId String?  // ID de Google Forms
+  notes            String?
+  createdAt        DateTime @default(now())
   
-  @@index([date, status])
+  @@index([date, startTime])
   @@index([serviceId])
+  @@index([status])
 }
+
+# NOTA: Los datos del cliente (nombre, email, teléfono) están en Google Forms.
+# La tabla Booking solo registra qué slots están ocupados.
 
 enum BookingStatus {
   PENDING
@@ -342,32 +344,31 @@ Body: { "price": 55, "isActive": false }
 DELETE /services/:id
 Notes: Marca como inactivo (soft delete)
 
-# Reservas
+# Reservas (ADMIN ONLY)
 POST /bookings
 Body: {
-  "customerName": "María González",
-  "customerEmail": "maria@example.com",
-  "customerPhone": "+506 8888-8888",
   "serviceId": "clxyz...",
   "date": "2025-02-15",
   "startTime": "10:00",
-  "notes": "Cliente prefiere masajista femenina",
+  "notes": "Cliente prefiere masajista femenina (opcional)",
   "formSubmissionId": "response-123",  // ID del Google Form (opcional)
   "skipAvailabilityCheck": false  // true = admin puede forzar slot ocupado
 }
-Response: { id, customerName, serviceId, date, startTime, endTime, status: "PENDING", ... }
+Response: { id, serviceId, date, startTime, endTime, status: "PENDING", formSubmissionId, ... }
 Notes: ADMIN ONLY - Se usa después de revisar el Google Form
+       NO incluye datos del cliente (están en Google Forms)
        NO envía email (ya lo recibió de Google Forms)
 
 GET /bookings?status=PENDING&date=2025-02-15
-Response: [{ id, customerName, service: {...}, date, time, status }, ...]
+Response: [{ id, service: {...}, date, time, status, formSubmissionId }, ...]
 
 GET /bookings/:id
-Response: { id, customerName, customerEmail, service, date, startTime, endTime, status, notes }
+Response: { id, serviceId, service, date, startTime, endTime, status, notes, formSubmissionId }
 
 PATCH /bookings/:id/confirm
 Response: { id, status: "CONFIRMED", ... }
-Notes: Envía email de confirmación al cliente
+Notes: Marca slot como confirmado
+       Admin debe confirmar manualmente con cliente usando datos de Google Forms
 
 PATCH /bookings/:id/cancel
 Response: { id, status: "CANCELLED", ... }
@@ -453,12 +454,16 @@ window.open(formUrl, '_blank');
    ↓
 5. Admin revisa email y accede al panel admin
    ↓
-6. Admin crea reserva: POST /bookings (copia datos del Form)
+6. Admin crea reserva: POST /bookings (solo serviceId + date + startTime)
    ↓
-7. Admin confirma: PATCH /bookings/:id/confirm
+7. Admin confirma: PATCH /bookings/:id/confirm (marca slot como ocupado)
    ↓
-8. Cliente recibe email de confirmación
+8. Admin contacta manualmente al cliente usando datos del email de Google Forms
 ```
+
+**Nota**: Los datos del cliente (nombre, email, teléfono) NO se almacenan en la base de datos.
+Solo se guardan en las respuestas de Google Forms. El admin debe consultar el email de Google
+Forms para obtener la información de contacto del cliente.
 
 ---
 

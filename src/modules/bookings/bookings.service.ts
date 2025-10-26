@@ -4,12 +4,9 @@ import { addHours, format, parseISO, isAfter, isBefore, startOfDay } from 'date-
 const prisma = new PrismaClient();
 
 // Tipos de estado de reserva (usamos string literal en vez del enum de Prisma)
-type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
+type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
 
 export interface CreateBookingData {
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
   serviceId: string;
   date: string; // ISO date string
   startTime: string; // HH:mm format
@@ -20,9 +17,6 @@ export interface CreateBookingData {
 
 export interface Booking {
   id: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
   serviceId: string;
   service?: {
     id: string;
@@ -34,6 +28,7 @@ export interface Booking {
   startTime: string;
   endTime: string;
   status: string;
+  formSubmissionId?: string | null;
   notes?: string | null;
   createdAt: Date;
 }
@@ -72,18 +67,12 @@ class BookingsService {
 
     return await prisma.booking.create({
       data: {
-        customerName: data.customerName,
-        customerEmail: data.customerEmail,
-        customerPhone: data.customerPhone,
         serviceId: data.serviceId,
         date: parseISO(data.date),
         startTime: data.startTime,
         endTime,
-        notes: data.notes 
-          ? `${data.notes}${data.formSubmissionId ? `\n[Google Form ID: ${data.formSubmissionId}]` : ''}`
-          : data.formSubmissionId 
-            ? `[Google Form ID: ${data.formSubmissionId}]` 
-            : undefined,
+        formSubmissionId: data.formSubmissionId,
+        notes: data.notes,
         status: 'PENDING'
       }
     });
@@ -245,9 +234,9 @@ class BookingsService {
       isAvailable: boolean;
       booking?: {
         id: string;
-        customerName: string;
         service: string;
         status: string;
+        formSubmissionId?: string | null;
       };
     }>;
   }> {
@@ -304,9 +293,9 @@ class BookingsService {
           isAvailable: false,
           booking: {
             id: booking.id,
-            customerName: booking.customerName,
             service: booking.service.name,
-            status: booking.status
+            status: booking.status,
+            formSubmissionId: booking.formSubmissionId
           }
         });
       } else {

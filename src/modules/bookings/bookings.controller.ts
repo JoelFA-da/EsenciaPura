@@ -1,15 +1,9 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { bookingsService } from './bookings.service';
-import { emailService } from '../../common/services/email.service';
 
 // Schema de validación para crear reserva (ADMIN - después de Google Form)
 const createBookingSchema = z.object({
-  customerName: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
-  customerEmail: z.string().email('Email inválido'),
-  customerPhone: z.string().min(8, 'Teléfono inválido'),
   serviceId: z.string().cuid('ID de servicio inválido'),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)'),
   startTime: z.string().regex(/^\d{2}:\d{2}$/, 'Formato de hora inválido (HH:mm)'),
@@ -82,30 +76,15 @@ export async function getBooking(req: Request, res: Response) {
 }
 
 // Confirmar reserva (admin)
+// NOTA: No se envía email automático porque los datos del cliente están en Google Forms.
+//       El admin debe confirmar manualmente con el cliente usando la información del formulario.
 export async function confirmBooking(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const booking = await bookingsService.confirm(id);
-    const bookingDetails = await bookingsService.getById(id);
-    
-    // Enviar email de confirmación al cliente
-    if (bookingDetails?.service) {
-      try {
-        await emailService.sendBookingConfirmation({
-          customerName: booking.customerName,
-          customerEmail: booking.customerEmail,
-          serviceName: bookingDetails.service.name,
-          date: format(booking.date, 'dd/MM/yyyy', { locale: es }),
-          time: booking.startTime,
-          bookingId: booking.id
-        });
-      } catch (emailError) {
-        console.error('Error al enviar email de confirmación:', emailError);
-      }
-    }
     
     return res.json({ 
-      message: 'Reserva confirmada exitosamente. Se envió un email al cliente.',
+      message: 'Reserva confirmada exitosamente. Confirma manualmente con el cliente usando los datos de Google Forms.',
       booking 
     });
   } catch (error) {

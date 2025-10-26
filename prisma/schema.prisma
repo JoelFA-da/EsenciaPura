@@ -40,14 +40,9 @@ model Service {
   @@map("services")
 }
 
-// Reservas de clientes
+// Reservas (solo bloques horarios - datos del cliente en Google Forms)
 model Booking {
   id            String   @id @default(cuid())
-  
-  // Datos del cliente
-  customerName  String
-  customerEmail String
-  customerPhone String
   
   // Detalles de la reserva
   serviceId     String
@@ -60,7 +55,10 @@ model Booking {
   // Estado de la reserva
   status        BookingStatus @default(PENDING)
   
-  // Notas adicionales
+  // Referencia al formulario de Google
+  formSubmissionId String? // ID de la respuesta de Google Forms (opcional)
+  
+  // Notas adicionales del admin
   notes         String?
   
   createdAt     DateTime @default(now())

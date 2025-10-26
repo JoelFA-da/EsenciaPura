@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { AppError } from '@common/errors/AppError';
+import { AppError } from '../../common/errors/AppError';
 import { authService } from './auth.service';
 
 const registerSchema = z.object({

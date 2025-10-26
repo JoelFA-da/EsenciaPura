@@ -10,13 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "types": ["node", "jest"],
-    "baseUrl": "src",
-    "paths": {
-      "@common/*": ["common/*"],
-      "@modules/*": ["modules/*"],
-      "@config/*": ["config/*"]
-    }
+    "types": ["node", "jest"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

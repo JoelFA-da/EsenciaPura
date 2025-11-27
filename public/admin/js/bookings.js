@@ -262,21 +262,21 @@ async function loadBookings(filters = {}) {
         document.querySelectorAll('.confirm-booking-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const index = parseInt(btn.dataset.index);
-                confirmBooking(bookings[index].id);
+                confirmBooking(window.bookingsData[index].id);
             });
         });
 
         document.querySelectorAll('.cancel-booking-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const index = parseInt(btn.dataset.index);
-                cancelBooking(bookings[index].id);
+                cancelBooking(window.bookingsData[index].id);
             });
         });
 
         document.querySelectorAll('.complete-booking-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const index = parseInt(btn.dataset.index);
-                completeBooking(bookings[index].id);
+                completeBooking(window.bookingsData[index].id);
             });
         });
 

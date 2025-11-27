@@ -2,7 +2,7 @@
 # Documentación: https://render.com/docs/blueprint-spec
 
 services:
-  # API Backend (Node.js + Express + SQLite)
+  # API Backend (Node.js + Express + PostgreSQL en Supabase)
   - type: web
     name: esenciapura-api
     runtime: node
@@ -11,13 +11,8 @@ services:
     branch: main
     rootDir: .
     buildCommand: npm ci && npx prisma generate && npm run build
-    startCommand: npx prisma migrate deploy && node dist/server.js
+    startCommand: npx prisma db push --accept-data-loss && node dist/server.js
     healthCheckPath: /health
-    # Volumen persistente para SQLite (GRATIS)
-    disk:
-      name: esenciapura-sqlite
-      mountPath: /data
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
@@ -26,24 +21,22 @@ services:
       - key: LOG_LEVEL
         value: info
       - key: DATABASE_URL
-        value: file:/data/esenciapura.db
+        sync: false  # Configurar manualmente con URL de Supabase Session Pooler
       - key: SMTP_HOST
-        sync: false  # Configurar manualmente en Render Dashboard
+        value: smtp.gmail.com
       - key: SMTP_PORT
         value: 587
       - key: SMTP_USER
-        sync: false
+        sync: false  # Configurar manualmente en Render Dashboard
       - key: SMTP_PASS
-        sync: false
+        sync: false  # Configurar manualmente en Render Dashboard
       - key: BUSINESS_EMAIL
-        sync: false
+        sync: false  # Configurar manualmente en Render Dashboard
+      - key: BUSINESS_PHONE
+        value: 8882-6504
       - key: JWT_SECRET
-        generateValue: true  # Render generará valor aleatorio
+        generateValue: true  # Render generará valor aleatorio seguro
 
-# Ya no necesitamos base de datos PostgreSQL separada ($0 de ahorro)
-# databases:
-#   - name: esenciapura-db
-#     databaseName: esenciapura
-#     user: esenciapura_user
-#     region: oregon
-#     plan: free
+# NOTA: Usamos PostgreSQL en Supabase (base de datos externa)
+# NO necesitamos disco persistente ni base de datos de Render
+# Ventajas: Más estable, backups automáticos, acceso desde cualquier lugar

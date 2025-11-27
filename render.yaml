@@ -11,7 +11,7 @@ services:
     branch: main
     rootDir: .
     buildCommand: npm ci && npx prisma generate && npm run build
-    startCommand: npx prisma db push --accept-data-loss && node dist/server.js
+    startCommand: node dist/server.js
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -37,6 +37,5 @@ services:
       - key: JWT_SECRET
         generateValue: true  # Render generará valor aleatorio seguro
 
-# NOTA: Usamos PostgreSQL en Supabase (base de datos externa)
-# NO necesitamos disco persistente ni base de datos de Render
-# Ventajas: Más estable, backups automáticos, acceso desde cualquier lugar
+# NOTA: Base de datos ya está configurada en Supabase con tablas creadas
+# NO necesitamos migrar ni hacer push, solo conectar y usar

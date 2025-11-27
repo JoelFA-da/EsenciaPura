@@ -9,16 +9,15 @@ const config_1 = require("../../config");
 const AppError_1 = require("../errors/AppError");
 function authenticate(req, res, next) {
     try {
-        const authRequest = req;
-        const authHeader = authRequest.headers.authorization;
+        const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             throw new AppError_1.AppError('No se proporcionó token de autenticación', 401);
         }
         const token = authHeader.substring(7); // Remove 'Bearer ' prefix
         try {
             const decoded = jsonwebtoken_1.default.verify(token, config_1.env.JWT_SECRET);
-            authRequest.userId = decoded.userId;
-            authRequest.userEmail = decoded.email;
+            req.userId = decoded.userId;
+            req.userEmail = decoded.email;
             next();
         }
         catch (error) {

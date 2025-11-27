@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas - Esencia Pura Admin</title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Esencia Pura</h1>
+                <p>Panel Admin</p>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/admin/index.html">
+                            <span class="icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/categories.html">
+                            <span class="icon">📁</span>
+                            <span>Categorías</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/services.html">
+                            <span class="icon">💆</span>
+                            <span>Servicios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/bookings.html" class="active">
+                            <span class="icon">📅</span>
+                            <span>Reservas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/" target="_blank">
+                            <span class="icon">🌐</span>
+                            <span>Ver Sitio</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <div class="user-details">
+                        <p id="user-name">Admin</p>
+                        <small id="user-email">admin@esenciapura.com</small>
+                    </div>
+                </div>
+                <button class="btn btn-logout" id="logout-btn">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h2>Reservas</h2>
+                    <p>Gestiona las citas y reservas de los clientes</p>
+                </div>
+                <button class="btn btn-primary" id="new-booking-btn">
+                    <span>➕</span> Nueva Reserva
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div style="display: flex; gap: 1rem; padding: 1rem; flex-wrap: wrap;">
+                    <input type="date" id="filter-date" class="form-control" style="flex: 1; min-width: 200px;">
+                    <select id="filter-status" class="form-control" style="flex: 1; min-width: 200px;">
+                        <option value="">Todos los estados</option>
+                        <option value="PENDING">Pendiente</option>
+                        <option value="CONFIRMED">Confirmada</option>
+                        <option value="CANCELLED">Cancelada</option>
+                        <option value="COMPLETED">Completada</option>
+                    </select>
+                    <button class="btn btn-primary" id="apply-filters-btn">Filtrar</button>
+                    <button class="btn btn-secondary" id="clear-filters-btn">Limpiar</button>
+                </div>
+            </div>
+
+            <!-- Bookings Table -->
+            <div class="card">
+                <div class="table-container">
+                    <table id="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Fecha 
+                                    <span style="display: inline-flex; flex-direction: column; margin-left: 5px; cursor: pointer;">
+                                        <button id="sort-date-asc" style="background: none; border: none; padding: 0; margin: 0; cursor: pointer; font-size: 14px; color: #666; line-height: 1;" title="Ordenar: Más antigua primero">▲</button>
+                                        <button id="sort-date-desc" style="background: none; border: none; padding: 0; margin: 0; cursor: pointer; font-size: 14px; color: #666; line-height: 1;" title="Ordenar: Más reciente primero">▼</button>
+                                    </span>
+                                </th>
+                                <th>Hora</th>
+                                <th>Servicio</th>
+                                <th>Cliente</th>
+                                <th>Teléfono</th>
+                                <th>Estado</th>
+                                <th>ID Formulario</th>
+                                <th>Notas</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-tbody">
+                            <tr>
+                                <td colspan="9" class="loading">
+                                    <div class="loading-spinner"></div>
+                                    Cargando reservas...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Create/Edit Booking -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Nueva Reserva</h3>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+
+            <form id="booking-form">
+                <input type="hidden" id="booking-id">
+
+                        <div class="form-group">
+          <label for="booking-service">Servicio *</label>
+          <select id="booking-service" required>
+            <option value="">Cargando servicios...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="customer-name">Nombre del Cliente</label>
+          <input type="text" id="customer-name" placeholder="Nombre completo" />
+        </div>
+
+        <div class="form-group">
+          <label for="customer-phone">Teléfono del Cliente</label>
+          <input type="tel" id="customer-phone" placeholder="Ej: 8882-6504" />
+        </div>
+
+        <div class="form-group">
+          <label for="customer-email">Email del Cliente (opcional)</label>
+          <input type="email" id="customer-email" placeholder="cliente@ejemplo.com" />
+          <small>Si se proporciona, el cliente recibirá instrucciones de pago por email</small>
+        </div>
+
+        <div class="form-group">
+          <label for="booking-date">Fecha *</label>
+          <input type="date" id="booking-date" required />
+        </div>
+
+                <div class="form-group">
+                    <label for="booking-time">Hora de Inicio *</label>
+                    <select id="booking-time" required>
+                        <option value="">Selecciona primero la fecha</option>
+                    </select>
+                    <small>Horarios disponibles según el día seleccionado</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="booking-form-id">ID Formulario</label>
+                    <input type="text" id="booking-form-id" 
+                           placeholder="Ej: form-response-123">
+                    <small>ID de la respuesta del Formulario para referencia</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="booking-notes">Notas (opcional)</label>
+                    <textarea id="booking-notes" rows="3" 
+                              placeholder="Preferencias del cliente, observaciones..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="booking-skip-check">
+                        <span>Forzar reserva aunque el horario esté ocupado</span>
+                    </label>
+                    <small style="color: #e74c3c;">Solo usa esta opción en casos excepcionales</small>
+                </div>
+
+                <div id="form-error" class="error-message" style="display:none;"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <span id="submit-text">Crear Reserva</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/admin/js/bookings.js"></script>
+</body>
+</html>

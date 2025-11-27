@@ -1,0 +1,49 @@
+# Render Blueprint para deployment automático
+# Documentación: https://render.com/docs/blueprint-spec
+
+services:
+  # API Backend (Node.js + Express + SQLite)
+  - type: web
+    name: esenciapura-api
+    runtime: node
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: .
+    buildCommand: npm ci && npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && node dist/server.js
+    healthCheckPath: /health
+    # Volumen persistente para SQLite (GRATIS)
+    disk:
+      name: esenciapura-sqlite
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: LOG_LEVEL
+        value: info
+      - key: DATABASE_URL
+        value: file:/data/esenciapura.db
+      - key: SMTP_HOST
+        sync: false  # Configurar manualmente en Render Dashboard
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: BUSINESS_EMAIL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true  # Render generará valor aleatorio
+
+# Ya no necesitamos base de datos PostgreSQL separada ($0 de ahorro)
+# databases:
+#   - name: esenciapura-db
+#     databaseName: esenciapura
+#     user: esenciapura_user
+#     region: oregon
+#     plan: free

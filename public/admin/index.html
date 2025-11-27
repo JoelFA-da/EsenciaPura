@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Esencia Pura Admin</title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Esencia Pura</h1>
+                <p>Panel Admin</p>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/admin/index.html" class="active">
+                            <span class="icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/categories.html">
+                            <span class="icon">📁</span>
+                            <span>Categorías</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/services.html">
+                            <span class="icon">💆</span>
+                            <span>Servicios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/bookings.html">
+                            <span class="icon">📅</span>
+                            <span>Reservas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/" target="_blank">
+                            <span class="icon">🌐</span>
+                            <span>Ver Sitio</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <div class="user-details">
+                        <p id="user-name">Admin</p>
+                        <small id="user-email">admin@esenciapura.com</small>
+                    </div>
+                </div>
+                <button class="btn btn-logout" id="logout-btn">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Dashboard</h2>
+                <p>Vista general del sistema</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <span>📁</span>
+                    </div>
+                    <div class="stat-details">
+                        <h3 id="stat-categories">-</h3>
+                        <p>Categorías</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <span>💆</span>
+                    </div>
+                    <div class="stat-details">
+                        <h3 id="stat-services">-</h3>
+                        <p>Servicios Activos</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <span>⏳</span>
+                    </div>
+                    <div class="stat-details">
+                        <h3 id="stat-pending">-</h3>
+                        <p>Reservas Pendientes</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <span>✅</span>
+                    </div>
+                    <div class="stat-details">
+                        <h3 id="stat-confirmed">-</h3>
+                        <p>Reservas Confirmadas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Reservas Recientes</h3>
+                    <a href="/admin/bookings.html" class="btn btn-primary btn-sm">Ver Todas</a>
+                </div>
+
+                <div class="table-container">
+                    <table id="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Servicio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-tbody">
+                            <tr>
+                                <td colspan="5" class="loading">
+                                    <div class="loading-spinner"></div>
+                                    Cargando reservas...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Services -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Servicios</h3>
+                    <a href="/admin/services.html" class="btn btn-primary btn-sm">Gestionar</a>
+                </div>
+
+                <div class="table-container">
+                    <table id="services-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Duración</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="services-tbody">
+                            <tr>
+                                <td colspan="4" class="loading">
+                                    <div class="loading-spinner"></div>
+                                    Cargando servicios...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/admin/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías - Esencia Pura Admin</title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Esencia Pura</h1>
+                <p>Panel Admin</p>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/admin/index.html">
+                            <span class="icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/categories.html" class="active">
+                            <span class="icon">📁</span>
+                            <span>Categorías</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/services.html">
+                            <span class="icon">💆</span>
+                            <span>Servicios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/bookings.html">
+                            <span class="icon">📅</span>
+                            <span>Reservas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/" target="_blank">
+                            <span class="icon">🌐</span>
+                            <span>Ver Sitio</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <div class="user-details">
+                        <p id="user-name">Admin</p>
+                        <small id="user-email">admin@esenciapura.com</small>
+                    </div>
+                </div>
+                <button class="btn btn-logout" id="logout-btn">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h2>Categorías</h2>
+                    <p>Organiza tus servicios por categorías</p>
+                </div>
+                <button class="btn btn-primary" id="new-category-btn">
+                    <span>➕</span> Nueva Categoría
+                </button>
+            </div>
+
+            <!-- Categories Table -->
+            <div class="card">
+                <div class="table-container">
+                    <table id="categories-table">
+                        <thead>
+                            <tr>
+                                <th>Orden</th>
+                                <th>Categoría</th>
+                                <th>Descripción</th>
+                                <th>Servicios</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-tbody">
+                            <tr>
+                                <td colspan="6" class="loading">
+                                    <div class="loading-spinner"></div>
+                                    Cargando categorías...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Create/Edit Category -->
+    <div id="category-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Nueva Categoría</h3>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+
+            <form id="category-form">
+                <input type="hidden" id="category-id">
+
+                <div class="form-group">
+                    <label for="category-name">Nombre *</label>
+                    <input type="text" id="category-name" required maxlength="100" 
+                           placeholder="Ej: Masajes Terapéuticos">
+                </div>
+
+                <div class="form-group">
+                    <label for="category-description">Descripción *</label>
+                    <textarea id="category-description" required rows="4" 
+                              placeholder="Describe la categoría..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="category-image">URL de Imagen</label>
+                    <input type="url" id="category-image" 
+                           placeholder="https://ejemplo.com/imagen.jpg">
+                    <small>Opcional: URL de una imagen de la categoría</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="category-order">Orden de Visualización *</label>
+                    <input type="number" id="category-order" required min="0" value="0"
+                           placeholder="0">
+                    <small>Número menor aparece primero</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="category-active" checked>
+                        <span>Categoría activa (visible para clientes)</span>
+                    </label>
+                </div>
+
+                <div id="form-error" class="error-message" style="display:none;"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <span id="submit-text">Guardar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/admin/js/categories.js"></script>
+</body>
+</html>

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Cita - Esencia Pura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #9BA4D4;  /* Azul lavanda principal */
+            --primary-light: #E0E6F8;  /* Azul lavanda claro */
+            --secondary: #B8A4D4;  /* Lavanda secundario */
+            --accent: #D4A4C4;  /* Rosa lavanda */
+            --dark: #1A1A1A;
+            --gray: #666;
+            --light-gray: #F5F5F5;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #E8F5F4 0%, #FFFFFF 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Header */
+        .booking-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .booking-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .progress-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            width: 100%;
+            height: 3px;
+            background: #DDD;
+            z-index: -1;
+            transition: background 0.3s ease;
+        }
+
+        .progress-step.active:not(:last-child)::after {
+            background: var(--primary);
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #DDD;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #DDD;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(45, 95, 93, 0.3);
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Content Card */
+        .booking-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            min-height: 500px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .step-subtitle {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, var(--primary-light) 0%, white 100%);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(45, 95, 93, 0.15);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card.selected {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 8px 25px rgba(45, 95, 93, 0.2);
+        }
+
+        .service-card.selected::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .service-icon,
+        .service-card.selected .service-icon {
+            background: var(--secondary);
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .service-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .service-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #EEE;
+        }
+
+        .service-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .service-duration {
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Calendar */
+        .calendar-container {
+            max-width: 700px;
+            margin: 2rem auto;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--primary-light);
+            border-radius: 12px;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .calendar-nav button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav button:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            padding: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #EEE;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .calendar-day:hover:not(.disabled):not(.empty) {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        .calendar-day.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .calendar-day.disabled {
+            background: #F5F5F5;
+            color: #CCC;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.empty {
+            border: none;
+            cursor: default;
+        }
+
+        /* Time Slots */
+        .time-slots-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .time-slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .time-slot {
+            padding: 1.5rem 1rem;
+            text-align: center;
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-slot::before {
+            content: '🕐';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 3rem;
+            opacity: 0.1;
+            transition: transform 0.3s ease;
+        }
+
+        .time-slot:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(45, 95, 93, 0.15);
+        }
+
+        .time-slot:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .time-slot.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(45, 95, 93, 0.3);
+        }
+
+        .time-slot.selected::before {
+            content: '✓';
+            transform: translate(-50%, -50%) scale(1);
+            color: white;
+        }
+
+        /* Summary */
+        .summary-container {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--primary-light) 0%, white 100%);
+            border-left: 4px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .summary-value {
+            color: var(--dark);
+            font-size: 1rem;
+            text-align: right;
+        }
+
+        .summary-total {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+            color: var(--primary) !important;
+        }
+
+        /* Form */
+        .form-container {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 95, 93, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group small {
+            display: block;
+            color: var(--gray);
+            margin-top: 0.3rem;
+            font-size: 0.85rem;
+        }
+
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .category-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(45, 95, 93, 0.15);
+        }
+
+        .category-card.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(45, 95, 93, 0.3);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-card.selected h3 {
+            color: white;
+        }
+
+        .category-card p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .category-card.selected p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(45, 95, 93, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45, 95, 93, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #CCC;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        /* Loading & Empty States */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--primary-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .booking-header h1 {
+                font-size: 2rem;
+            }
+
+            .booking-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .progress-container {
+                padding: 0 1rem;
+            }
+
+            .step-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .step-label {
+                font-size: 0.8rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .time-slots-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back to Home Button -->
+        <div style="margin-bottom: 2rem;">
+            <a href="/" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); text-decoration: none; font-weight: 600; transition: all 0.3s ease;">
+                <span style="font-size: 1.5rem;">←</span> Volver al Inicio
+            </a>
+        </div>
+
+        <!-- Header -->
+        <div class="booking-header">
+            <h1>✨ Reserva tu Experiencia ✨</h1>
+            <p>Selecciona tu servicio, fecha y horario preferido</p>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 500px; margin-left: auto; margin-right: auto;">
+                <p style="color: var(--gray); margin: 0; font-size: 0.95rem;">
+                    <span style="color: #25D366; font-size: 1.2rem;">●</span> ¿Preferís reservar por WhatsApp? <br>
+                    <a href="https://wa.me/50688826504" target="_blank" style="color: #25D366; font-weight: 600; text-decoration: none; font-size: 1.1rem;">
+                        Escribinos al 8882-6504
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-container">
+            <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Categoría</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Servicio</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Fecha</div>
+            </div>
+            <div class="progress-step" data-step="4">
+                <div class="step-circle">4</div>
+                <div class="step-label">Horario</div>
+            </div>
+            <div class="progress-step" data-step="5">
+                <div class="step-circle">5</div>
+                <div class="step-label">Datos</div>
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="booking-card">
+            <!-- Step 1: Select Category -->
+            <div class="step-content active" id="step-1">
+                <h2 class="step-title">Elige una Categoría</h2>
+                <p class="step-subtitle">Selecciona el tipo de servicio que buscas</p>
+                <div class="categories-grid" id="categories-grid">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Cargando categorías...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Select Service -->
+            <div class="step-content" id="step-2">
+                <h2 class="step-title">Elige tu Servicio</h2>
+                <p class="step-subtitle">Selecciona el tratamiento que deseas disfrutar</p>
+                <div class="services-grid" id="services-grid">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Cargando servicios disponibles...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Select Date -->
+            <div class="step-content" id="step-3">
+                <h2 class="step-title">Selecciona la Fecha</h2>
+                <p class="step-subtitle">Elige el día que mejor se ajuste a tu agenda</p>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <h3 id="current-month"></h3>
+                        <div class="calendar-nav">
+                            <button id="prev-month">‹</button>
+                            <button id="next-month">›</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
+                </div>
+            </div>
+
+            <!-- Step 4: Select Time -->
+            <div class="step-content" id="step-4">
+                <h2 class="step-title">Escoge tu Horario</h2>
+                <p class="step-subtitle">Horarios disponibles para tu cita</p>
+                <div class="time-slots-container">
+                    <div class="time-slots-grid" id="time-slots-grid">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            Cargando horarios...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Contact Form -->
+            <div class="step-content" id="step-5">
+                <h2 class="step-title">Completa tus Datos</h2>
+                <p class="step-subtitle">Necesitamos tu información para confirmar la cita</p>
+                
+                <div class="summary-container" style="margin-bottom: 2rem;">
+                    <div class="summary-card" id="summary-preview">
+                        <div class="loading">Cargando resumen...</div>
+                    </div>
+                </div>
+
+                <!-- Payment Notice -->
+                <div style="background: linear-gradient(135deg, #FFF9E6 0%, #FFE8B3 100%); border-left: 4px solid var(--secondary); border-radius: 16px; padding: 1.5rem; margin: 2rem auto; max-width: 600px; box-shadow: 0 4px 12px rgba(201, 168, 106, 0.15);">
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <div style="font-size: 2rem; flex-shrink: 0;">💳</div>
+                        <div>
+                            <h3 style="color: var(--secondary); margin-bottom: 0.5rem; font-size: 1.2rem; font-weight: 600;">
+                                Confirmación de Reserva
+                            </h3>
+                            <p style="color: #5D4E37; line-height: 1.6; margin-bottom: 0.8rem;">
+                                Para confirmar tu cita, se requiere una <strong>transferencia de ₡5,000</strong> por SINPE Móvil.
+                            </p>
+                            <p style="color: #5D4E37; line-height: 1.6; font-size: 0.95rem;">
+                                📱 Te llegará un <strong>mensaje de texto</strong> y un <strong>correo electrónico</strong> con las instrucciones 
+                                para realizar la transferencia SINPE Móvil y completar tu reserva.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <form id="booking-form">
+                        <div class="form-group">
+                            <label for="customer-name">Nombre Completo *</label>
+                            <input 
+                                type="text" 
+                                id="customer-name" 
+                                name="customerName"
+                                placeholder="Ej: María González"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customer-email">Correo Electrónico *</label>
+                            <input 
+                                type="email" 
+                                id="customer-email" 
+                                name="customerEmail"
+                                placeholder="Ej: maria@ejemplo.com"
+                                required
+                            >
+                            <small>Te enviaremos la confirmación a este correo</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customer-phone">Teléfono *</label>
+                            <input 
+                                type="tel" 
+                                id="customer-phone" 
+                                name="customerPhone"
+                                placeholder="Ej: 8882-6504"
+                                required
+                            >
+                            <small>Para contactarte en caso de cambios</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customer-notes">Notas o Comentarios (opcional)</label>
+                            <textarea 
+                                id="customer-notes" 
+                                name="notes"
+                                placeholder="¿Tienes alguna preferencia o condición médica que debamos conocer?"
+                            ></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="button-group">
+                <button class="btn btn-secondary" id="btn-back" style="display: none;">
+                    ← Atrás
+                </button>
+                <button class="btn btn-primary" id="btn-next" disabled>
+                    Siguiente →
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div style="margin-top: 3rem; text-align: center; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <p style="color: var(--gray); font-size: 1rem; margin-bottom: 0.8rem;">
+                ¿Tenés dudas o preferís hablar con nosotros?
+            </p>
+            <p style="margin: 0;">
+                <span style="font-size: 2.5rem; color: #25D366; margin-right: 0.5rem;">●</span>
+                <a href="https://wa.me/50688826504" target="_blank" style="color: #25D366; font-weight: 600; text-decoration: none; font-size: 1.2rem;">
+                    8882-6504
+                </a>
+            </p>
+            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem; margin-bottom: 0;">
+                También podés hacer tu reserva contactándonos por WhatsApp
+            </p>
+        </div>
+    </div>
+
+    <script src="/js/reserva.js"></script>
+</body>
+</html>

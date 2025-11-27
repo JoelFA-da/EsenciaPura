@@ -1,0 +1,145 @@
+// Prisma schema para Esencia Pura - Sistema de Reservas
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Usuario administrador
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hash bcrypt
+  name      String
+  role      String   @default("admin") // admin
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// Categorías de servicios
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  imageUrl    String?
+  isActive    Boolean   @default(true)
+  order       Int       @default(0) // Para ordenar categorías en el frontend
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  services    Service[]
+
+  @@map("categories")
+}
+
+// Servicios/Tratamientos del spa
+model Service {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  duration    Int       // Duración en minutos (60 = 1 hora)
+  isActive    Boolean   @default(true)
+  imageUrl    String?
+  
+  // Información detallada
+  benefits         String?  // Beneficios del servicio (lista separada por saltos de línea)
+  recommendations  String?  // Recomendaciones (lista separada por saltos de línea)
+  
+  // Relación con categoría
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  bookings    Booking[]
+
+  @@map("services")
+  @@index([categoryId])
+}
+
+// Reservas (solo bloques horarios - datos del cliente en Google Forms)
+model Booking {
+  id            String   @id @default(cuid())
+  
+  // Detalles de la reserva
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id])
+  
+  date          DateTime // Fecha de la cita
+  startTime     String   // Hora de inicio (ej: "09:00")
+  endTime       String   // Hora de fin (ej: "10:00")
+  
+  // Datos del cliente (opcionales)
+  customerName  String?  // Nombre del cliente
+  customerPhone String?  // Teléfono del cliente
+  
+  // Estado de la reserva
+  status        BookingStatus @default(PENDING)
+  
+  // Referencia al formulario de Google
+  formSubmissionId String? // ID de la respuesta de Google Forms (opcional)
+  
+  // Notas adicionales del admin
+  notes         String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("bookings")
+  @@index([date, startTime])
+  @@index([serviceId])
+  @@index([status])
+}
+
+enum BookingStatus {
+  PENDING    // Pendiente de confirmación
+  CONFIRMED  // Confirmada por admin
+  CANCELLED  // Cancelada
+  COMPLETED  // Completada
+}
+
+// Configuración del horario de trabajo
+model WorkingHours {
+  id          String   @id @default(cuid())
+  dayOfWeek   Int      // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+  startTime   String   // Hora de apertura (ej: "09:00")
+  endTime     String   // Hora de cierre (ej: "18:00")
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([dayOfWeek])
+  @@map("working_hours")
+}
+
+// Galería de medios (fotos/videos)
+model Media {
+  id          String    @id @default(cuid())
+  type        MediaType @default(IMAGE)
+  url         String
+  title       String?
+  description String?
+  order       Int       @default(0)
+  isActive    Boolean   @default(true)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("media")
+  @@index([order])
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}

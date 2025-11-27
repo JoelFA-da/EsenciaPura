@@ -1,0 +1,2 @@
+# Este archivo mantiene la carpeta prisma/data/ en Git
+# Los archivos .db se ignoran en .gitignore

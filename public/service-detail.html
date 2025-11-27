@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detalles del servicio - Esencia Pura">
+    <title>Servicio - Esencia Pura</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        .service-detail {
+            padding: 4rem 0;
+            min-height: 60vh;
+        }
+
+        .service-detail-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .service-header {
+            display: block !important;
+            grid-template-columns: unset !important;
+            text-align: center !important;
+            margin-bottom: 3rem;
+        }
+
+        .service-category-badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center !important;
+            font-family: 'Cormorant Garamond', serif;
+            width: 100%;
+            display: block;
+        }
+
+        .service-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .service-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .service-meta-item strong {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .service-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .service-details-section {
+            margin-bottom: 3rem;
+        }
+
+        .service-details-section h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .service-details-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .service-details-section li {
+            padding: 0.8rem 0;
+            padding-left: 2rem;
+            position: relative;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .service-details-section li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .service-cta {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #f5f5f5 100%);
+            border-radius: 12px;
+            margin-top: 3rem;
+        }
+
+        .service-cta h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .service-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .loading-container {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .service-header h1 {
+                font-size: 2rem;
+            }
+
+            .service-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .service-actions {
+                flex-direction: column;
+            }
+
+            .service-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <h1>Esencia Pura</h1>
+                    <p class="tagline">Spa & Bienestar</p>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/about.html">Sobre Nosotros</a></li>
+                <li><a href="/#servicios">Servicios</a></li>
+                <li><a href="/reserva.html">Reservar</a></li>
+                <li><a href="/#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Service Detail -->
+    <section class="service-detail">
+        <div class="container">
+            <div class="service-detail-container">
+                <div id="service-content">
+                    <div class="loading-container">
+                        <div class="loading">Cargando detalles del servicio...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Esencia Pura</h3>
+                    <p>Tu espacio de bienestar y tranquilidad</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces</h4>
+                    <ul>
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/about.html">Sobre Nosotros</a></li>
+                        <li><a href="/#servicios">Servicios</a></li>
+                        <li><a href="/reserva.html">Reservar</a></li>
+                        <li><a href="/#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">Facebook</a>
+                        <a href="#" aria-label="Instagram">Instagram</a>
+                        <a href="#" aria-label="WhatsApp">WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Esencia Pura. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/service-detail.js"></script>
+</body>
+</html>

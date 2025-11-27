@@ -1,0 +1,112 @@
+┌──────────────────────────────────────────────────────────────┐
+│                                                              │
+│  ✅ CÓDIGO LISTO PARA RENDER - CHECKLIST RÁPIDO             │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+
+📋 PREPARACIÓN (YA COMPLETADO)
+  ✅ URLs del frontend actualizadas a window.location.origin
+  ✅ Scripts NPM agregados (prisma:seed)
+  ✅ Guía completa creada (GUIA_DEPLOYMENT_RENDER.md)
+  ✅ Variables de entorno documentadas (.env.example)
+  ✅ Configuración de Render lista (render.yaml)
+
+🚀 PASOS PARA PUBLICAR (30 minutos)
+
+┌─ PASO 1: GitHub (5 min) ─────────────────────────────────────┐
+│                                                               │
+│  1. git add .                                                 │
+│  2. git commit -m "Listo para deployment"                     │
+│  3. Crear repo en github.com                                  │
+│  4. git remote add origin [URL]                               │
+│  5. git push -u origin main                                   │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+
+┌─ PASO 2: Render.com (10 min) ────────────────────────────────┐
+│                                                               │
+│  1. Ir a render.com y registrarse                             │
+│  2. New + → Web Service                                       │
+│  3. Conectar repositorio GitHub                               │
+│  4. Configurar:                                               │
+│     • Name: esenciapura                                       │
+│     • Build: npm ci && npx prisma generate && npm run build   │
+│     • Start: npx prisma migrate deploy && npm start           │
+│     • Instance Type: Free                                     │
+│  5. Add Disk:                                                 │
+│     • Name: esenciapura-sqlite                                │
+│     • Mount Path: /data                                       │
+│     • Size: 1 GB                                              │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+
+┌─ PASO 3: Variables de Entorno (5 min) ───────────────────────┐
+│                                                               │
+│  Copiar y pegar en Render → Environment:                      │
+│                                                               │
+│  DATABASE_URL=file:/data/esenciapura.db                       │
+│  NODE_ENV=production                                          │
+│  PORT=3000                                                    │
+│  LOG_LEVEL=info                                               │
+│  SMTP_HOST=smtp.gmail.com                                     │
+│  SMTP_PORT=587                                                │
+│  SMTP_USER=Esenciapuraluz.09@gmail.com                        │
+│  SMTP_PASS=tmuz qsbw mczn tnal                                │
+│  BUSINESS_EMAIL=Esenciapuraluz.09@gmail.com                   │
+│  BUSINESS_PHONE=8882-6504                                     │
+│  JWT_SECRET=esenciapura-secret-2025                           │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+
+┌─ PASO 4: Desplegar (10 min) ─────────────────────────────────┐
+│                                                               │
+│  1. Click "Create Web Service"                                │
+│  2. Esperar build (5-10 min)                                  │
+│  3. Verificar logs sin errores                                │
+│  4. Abrir Shell en Render                                     │
+│  5. Ejecutar: npm run prisma:seed                             │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+
+┌─ PASO 5: Verificar (5 min) ──────────────────────────────────┐
+│                                                               │
+│  □ Abrir https://esenciapura.onrender.com                     │
+│  □ Ver página principal carga                                 │
+│  □ Ir a /admin                                                │
+│  □ Login: admin@esenciapura.com / admin123                    │
+│  □ Dashboard muestra datos                                    │
+│  □ Hacer reserva de prueba                                    │
+│  □ Verificar email llegue                                     │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 TIPS IMPORTANTES
+
+  • El primer deploy tarda 10-15 minutos
+  • Plan Free duerme tras 15 min inactividad
+  • Primer acceso puede tardar 30-60 segundos
+  • Cambiar contraseña admin después del seed
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DOCUMENTACIÓN COMPLETA
+
+  Ver archivo: GUIA_DEPLOYMENT_RENDER.md
+  
+  Incluye:
+  • Pasos detallados con capturas
+  • Troubleshooting completo
+  • Configuración de dominio personalizado
+  • Backups y mantenimiento
+  • Tips para la presentación TCU
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 TODO LISTO - SOLO SEGUIR LOS PASOS
+
+   Tiempo total estimado: 30 minutos
+   Costo: $0/mes (Plan Free)
+   
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

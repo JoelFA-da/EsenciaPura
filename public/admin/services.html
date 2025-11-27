@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - Esencia Pura Admin</title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Esencia Pura</h1>
+                <p>Panel Admin</p>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/admin/index.html">
+                            <span class="icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/categories.html">
+                            <span class="icon">📁</span>
+                            <span>Categorías</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/services.html" class="active">
+                            <span class="icon">💆</span>
+                            <span>Servicios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/bookings.html">
+                            <span class="icon">📅</span>
+                            <span>Reservas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/" target="_blank">
+                            <span class="icon">🌐</span>
+                            <span>Ver Sitio</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <div class="user-details">
+                        <p id="user-name">Admin</p>
+                        <small id="user-email">admin@esenciapura.com</small>
+                    </div>
+                </div>
+                <button class="btn btn-logout" id="logout-btn">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h2>Servicios</h2>
+                    <p>Gestiona los tratamientos del spa</p>
+                </div>
+                <button class="btn btn-primary" id="new-service-btn">
+                    <span>➕</span> Nuevo Servicio
+                </button>
+            </div>
+
+            <!-- Services Table -->
+            <div class="card">
+                <div class="table-container">
+                    <table id="services-table">
+                        <thead>
+                            <tr>
+                                <th>Servicio</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>Duración</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="services-tbody">
+                            <tr>
+                                <td colspan="6" class="loading">
+                                    <div class="loading-spinner"></div>
+                                    Cargando servicios...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Create/Edit Service -->
+    <div id="service-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Nuevo Servicio</h3>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+
+            <form id="service-form">
+                <input type="hidden" id="service-id">
+
+                <div class="form-group">
+                    <label for="service-name">Nombre *</label>
+                    <input type="text" id="service-name" required maxlength="100" 
+                           placeholder="Ej: Masaje Relajante">
+                </div>
+
+                <div class="form-group">
+                    <label for="service-category">Categoría *</label>
+                    <select id="service-category" required>
+                        <option value="">Cargando categorías...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="service-description">Descripción *</label>
+                    <textarea id="service-description" required rows="4" 
+                              placeholder="Describe el servicio..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="service-price">Precio (₡) *</label>
+                        <input type="number" id="service-price" required min="0" step="100"
+                               placeholder="25000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service-duration">Duración (min) *</label>
+                        <input type="number" id="service-duration" required min="15" step="15"
+                               placeholder="60" value="60">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="service-image">URL de Imagen</label>
+                    <input type="url" id="service-image" 
+                           placeholder="https://ejemplo.com/imagen.jpg">
+                    <small>Opcional: URL de una imagen del servicio</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="service-benefits">Beneficios</label>
+                    <textarea id="service-benefits" rows="4" 
+                              placeholder="Ingresa un beneficio por línea&#10;Ejemplo:&#10;Reduce el estrés y la ansiedad&#10;Mejora la circulación sanguínea&#10;Alivia dolores musculares"></textarea>
+                    <small>Opcional: Un beneficio por línea</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="service-recommendations">Recomendaciones</label>
+                    <textarea id="service-recommendations" rows="4" 
+                              placeholder="Ingresa una recomendación por línea&#10;Ejemplo:&#10;Llegar 10 minutos antes de la cita&#10;Evitar comidas pesadas antes del tratamiento&#10;Usar ropa cómoda"></textarea>
+                    <small>Opcional: Una recomendación por línea</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="service-active" checked>
+                        <span>Servicio activo (visible para clientes)</span>
+                    </label>
+                </div>
+
+                <div id="form-error" class="error-message" style="display:none;"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <span id="submit-text">Guardar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/admin/js/services.js"></script>
+</body>
+</html>

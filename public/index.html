@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Esencia Pura - Spa y bienestar en Costa Rica. Reserva tu tratamiento de relajación.">
+    <title>Esencia Pura - Spa & Bienestar</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h1>Esencia Pura</h1>
+                <p class="tagline">Spa & Bienestar</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="/about.html">Sobre Nosotros</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="/reserva.html">Reservar</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2>Encuentra tu paz interior</h2>
+            <p>Un espacio dedicado a tu bienestar y relajación</p>
+            <a href="/reserva.html" class="btn btn-primary">Reservar Ahora</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <h2 class="section-title">Bienvenido a Esencia Pura</h2>
+            <p class="section-description">
+                Un espacio integral y acogedor donde puedes encontrar bienestar físico, 
+                emocional y espiritual a través de terapias holísticas, masajes, nutrición 
+                y ejercicio. Promovemos la conexión entre mente, cuerpo y alma, guiándote 
+                en tu camino hacia la plenitud y la armonía.
+            </p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicios" class="services">
+        <div class="container">
+            <h2 class="section-title">Nuestros Tratamientos</h2>
+            <p class="section-description">Descubre nuestros servicios diseñados para tu bienestar</p>
+            
+            <div id="services-grid" class="services-grid">
+                <!-- Services will be loaded dynamically from API -->
+                <div class="loading">Cargando servicios...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contáctanos</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <h3>📍 Ubicación</h3>
+                        <p>San José, Costa Rica</p>
+                    </div>
+                    <div class="contact-item">
+                        <h3>📞 Teléfono</h3>
+                        <p>+506 xxxx-xxxx</p>
+                    </div>
+                    <div class="contact-item">
+                        <h3>📧 Email</h3>
+                        <p>info@esenciapura.com</p>
+                    </div>
+                    <div class="contact-item">
+                        <h3>🕐 Horario</h3>
+                        <p>Lunes a Viernes: 9:00 AM - 6:00 PM</p>
+                        <p>Sábados: 10:00 AM - 4:00 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Esencia Pura</h3>
+                    <p>Tu espacio de bienestar y tranquilidad</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/about.html">Sobre Nosotros</a></li>
+                        <li><a href="/#servicios">Servicios</a></li>
+                        <li><a href="/reserva.html">Reservar</a></li>
+                        <li><a href="/#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">Facebook</a>
+                        <a href="#" aria-label="Instagram">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Esencia Pura. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/app.js"></script>
+</body>
+</html>

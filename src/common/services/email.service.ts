@@ -1,6 +1,5 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import { logger } from '../utils/logger';
-import { env } from '../../config/index';
 
 export interface BookingEmailData {
   customerName: string;
@@ -50,23 +49,22 @@ export interface ClientPaymentInstructionsData {
 }
 
 class EmailService {
-  private transporter;
+  private fromEmail: string;
 
   constructor() {
-    // Configurar transporter de Nodemailer
-    const smtpPort = parseInt(process.env.SMTP_PORT || '465');
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: smtpPort,
-      secure: smtpPort === 465, // true for 465 (SMTPS), false for 587 (STARTTLS)
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    });
+    // Configurar SendGrid API Key
+    const apiKey = process.env.SENDGRID_API_KEY;
+    this.fromEmail = process.env.SMTP_USER || 'Esenciapuraluz.09@gmail.com';
+    
+    if (apiKey) {
+      sgMail.setApiKey(apiKey);
+      logger.info('✅ SendGrid configurado correctamente');
+    } else {
+      logger.warn('⚠️ SENDGRID_API_KEY no configurada - emails no se enviarán');
+    }
   }
 
-  // Enviar notificación de nueva reserva al negocio (cuando CLIENTE crea solicitud)
+  // Enviar notificación de nueva reserva al negocio
   async sendNewBookingNotification(data: NewBookingNotificationData): Promise<void> {
     try {
       const businessEmail = process.env.BUSINESS_EMAIL || 'esenciapura@example.com';
@@ -78,9 +76,9 @@ class EmailService {
         day: 'numeric'
       });
 
-      await this.transporter.sendMail({
-        from: `"Esencia Pura - Sistema de Reservas" <${process.env.SMTP_USER}>`,
+      const msg = {
         to: businessEmail,
+        from: { email: this.fromEmail, name: 'Esencia Pura - Sistema de Reservas' },
         subject: `🔔 Nueva Solicitud de Reserva - ${data.booking.service.name}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -127,11 +125,12 @@ class EmailService {
             </div>
           </div>
         `
-      });
+      };
 
+      await sgMail.send(msg);
       logger.info(`✅ Email de nueva reserva enviado a ${businessEmail} para booking ${data.booking.id}`);
     } catch (error) {
-      logger.error(`❌ Error al enviar email de nueva reserva: ${error}`);
+      logger.error('❌ Error al enviar email de nueva reserva:', error);
       throw error;
     }
   }
@@ -149,9 +148,9 @@ class EmailService {
       const depositAmount = 5000; // ₡5,000 anticipo
       const businessPhone = process.env.BUSINESS_PHONE || '8882-6504';
 
-      await this.transporter.sendMail({
-        from: `"Esencia Pura" <${process.env.SMTP_USER}>`,
+      const msg = {
         to: data.customer.email,
+        from: { email: this.fromEmail, name: 'Esencia Pura' },
         subject: `✨ Solicitud de Reserva Recibida - ${data.booking.service.name}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -216,67 +215,25 @@ class EmailService {
             </div>
           </div>
         `
-      });
+      };
 
+      await sgMail.send(msg);
       logger.info(`✅ Instrucciones de pago enviadas a ${data.customer.email} para booking ${data.booking.id}`);
     } catch (error) {
-      logger.error(`❌ Error al enviar instrucciones de pago: ${error}`);
-      throw error;
-    }
-  }
-
-  // Enviar confirmación al cliente (legacy, mantener para compatibilidad)
-  async sendBookingConfirmation(data: BookingEmailData): Promise<void> {
-    try {
-      await this.transporter.sendMail({
-        from: `"Esencia Pura" <${process.env.SMTP_USER}>`,
-        to: data.customerEmail,
-        subject: `Confirmación de Reserva - ${data.serviceName}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #2c5f2d;">¡Tu Reserva ha sido Confirmada!</h2>
-            <p>Hola ${data.customerName},</p>
-            <p>Tu reserva en Esencia Pura ha sido confirmada exitosamente.</p>
-            
-            <div style="background-color: #e8f5e9; padding: 20px; border-radius: 5px; margin: 20px 0;">
-              <h3 style="margin-top: 0; color: #2c5f2d;">Detalles de tu Reserva</h3>
-              <p><strong>Servicio:</strong> ${data.serviceName}</p>
-              <p><strong>Fecha:</strong> ${data.date}</p>
-              <p><strong>Hora:</strong> ${data.time}</p>
-              <p><strong>Código de Reserva:</strong> ${data.bookingId}</p>
-            </div>
-            
-            <p>Te esperamos en la fecha y hora indicadas. Si necesitas realizar algún cambio, por favor contáctanos.</p>
-            
-            <p style="margin-top: 30px;">
-              Saludos,<br>
-              <strong>Equipo Esencia Pura</strong>
-            </p>
-            
-            <p style="color: #666; font-size: 12px; margin-top: 30px;">
-              Si no solicitaste esta reserva, por favor ignora este correo.
-            </p>
-          </div>
-        `
-      });
-
-      logger.info(`Email de confirmación enviado a ${data.customerEmail}`);
-    } catch (error) {
-      logger.error(`Error al enviar email de confirmación: ${error}`);
+      logger.error('❌ Error al enviar instrucciones de pago:', error);
       throw error;
     }
   }
 
   // Verificar configuración del servicio de email
   async verifyConnection(): Promise<boolean> {
-    try {
-      await this.transporter.verify();
-      logger.info('Conexión SMTP verificada exitosamente');
-      return true;
-    } catch (error) {
-      logger.error(`Error al verificar conexión SMTP: ${error}`);
+    const apiKey = process.env.SENDGRID_API_KEY;
+    if (!apiKey) {
+      logger.error('❌ SENDGRID_API_KEY no configurada');
       return false;
     }
+    logger.info('✅ SendGrid API Key configurada');
+    return true;
   }
 }
 

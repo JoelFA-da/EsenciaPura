@@ -84,7 +84,7 @@ class EmailService {
             logger_1.logger.info(`✅ Email de nueva reserva enviado a ${businessEmail} para booking ${data.booking.id}`);
         }
         catch (error) {
-            logger_1.logger.error(`❌ Error al enviar email de nueva reserva:`, error);
+            logger_1.logger.error({ error }, '❌ Error al enviar email de nueva reserva');
             throw error;
         }
     }
@@ -171,7 +171,7 @@ class EmailService {
             logger_1.logger.info(`✅ Instrucciones de pago enviadas a ${data.customer.email} para booking ${data.booking.id}`);
         }
         catch (error) {
-            logger_1.logger.error(`❌ Error al enviar instrucciones de pago:`, error);
+            logger_1.logger.error({ error }, '❌ Error al enviar instrucciones de pago');
             throw error;
         }
     }

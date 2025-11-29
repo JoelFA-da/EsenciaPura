@@ -1,6 +1,7 @@
 import sgMail from '@sendgrid/mail';
 import { logger } from '../utils/logger';
 
+// Email Service - SendGrid API (v2025-11-29)
 export interface BookingEmailData {
   customerName: string;
   customerEmail: string;
@@ -130,7 +131,7 @@ class EmailService {
       await sgMail.send(msg);
       logger.info(`✅ Email de nueva reserva enviado a ${businessEmail} para booking ${data.booking.id}`);
     } catch (error) {
-      logger.error('❌ Error al enviar email de nueva reserva:', error);
+      logger.error({ error }, '❌ Error al enviar email de nueva reserva');
       throw error;
     }
   }
@@ -220,7 +221,7 @@ class EmailService {
       await sgMail.send(msg);
       logger.info(`✅ Instrucciones de pago enviadas a ${data.customer.email} para booking ${data.booking.id}`);
     } catch (error) {
-      logger.error('❌ Error al enviar instrucciones de pago:', error);
+      logger.error({ error }, '❌ Error al enviar instrucciones de pago');
       throw error;
     }
   }

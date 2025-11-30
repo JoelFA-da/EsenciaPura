@@ -157,7 +157,12 @@ async function loadCategories() {
         
         categoriesGrid.innerHTML = categories.map(category => `
             <div class="category-card" data-category-id="${category.id}">
-                <div class="category-icon">${category.icon || '🌿'}</div>
+                <div class="category-icon">
+                    ${category.imageUrl 
+                        ? `<img src="${category.imageUrl}" alt="${category.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;">` 
+                        : (category.icon || '🌿')
+                    }
+                </div>
                 <h3>${category.name}</h3>
                 <p>${category.description || ''}</p>
             </div>
@@ -209,7 +214,12 @@ async function loadServicesByCategory(categoryId) {
         
         servicesGrid.innerHTML = services.map(service => `
             <div class="service-card" data-service-id="${service.id}">
-                <div class="service-icon">💆</div>
+                <div class="service-icon">
+                    ${service.imageUrl 
+                        ? `<img src="${service.imageUrl}" alt="${service.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;">` 
+                        : '💆'
+                    }
+                </div>
                 <h3>${service.name}</h3>
                 <p>${service.description}</p>
                 <div class="service-details">

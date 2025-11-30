@@ -57,6 +57,12 @@ function renderService(service) {
     container.innerHTML = `
         <div class="service-header">
             ${service.category ? `<span class="service-category-badge">${service.category.name}</span>` : ''}
+            ${service.imageUrl ? `
+                <div style="text-align: center; margin: 2rem 0;">
+                    <img src="${service.imageUrl}" alt="${service.name}" 
+                         style="max-width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                </div>
+            ` : ''}
             <h1 style="text-align: center;">${service.name}</h1>
             <div class="service-meta">
                 <div class="service-meta-item">

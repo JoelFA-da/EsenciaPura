@@ -151,9 +151,17 @@
 
                 <div class="form-group">
                     <label for="service-image">URL de Imagen</label>
-                    <input type="url" id="service-image" 
-                           placeholder="https://ejemplo.com/imagen.jpg">
-                    <small>Opcional: URL de una imagen del servicio</small>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <input type="url" id="service-image" 
+                               placeholder="https://ejemplo.com/imagen.jpg" style="flex: 1;">
+                        <button type="button" id="upload-service-image-btn" 
+                                style="padding: 10px 20px; background: #9BA4D4; color: white; border: none; border-radius: 5px; cursor: pointer; white-space: nowrap;">
+                            📷 Subir Imagen
+                        </button>
+                    </div>
+                    <input type="file" id="service-image-file-input" accept="image/*" style="display: none;">
+                    <small>Opcional: Pega una URL o sube una imagen desde tu computadora</small>
+                    <div id="upload-service-status" style="margin-top: 5px; font-size: 12px;"></div>
                 </div>
 
                 <div class="form-group">

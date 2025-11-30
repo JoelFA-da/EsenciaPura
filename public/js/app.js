@@ -131,7 +131,10 @@ function renderCategories(categories) {
     categoriesGrid.innerHTML = categories.map(category => `
         <div class="service-card">
             <div class="service-image">
-                ${getCategoryIcon(category.name)}
+                ${category.imageUrl 
+                    ? `<img src="${category.imageUrl}" alt="${category.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` 
+                    : getCategoryIcon(category.name)
+                }
             </div>
             <h3>${category.name}</h3>
             <p>${category.description || 'Descubre nuestros tratamientos'}</p>
@@ -152,7 +155,10 @@ function renderServices(services) {
     categoriesGrid.innerHTML = services.map(service => `
         <div class="service-card">
             <div class="service-image">
-                ${getCategoryIcon(service.category?.name || '')}
+                ${service.imageUrl 
+                    ? `<img src="${service.imageUrl}" alt="${service.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` 
+                    : getCategoryIcon(service.category?.name || '')
+                }
             </div>
             <h3>${service.name}</h3>
             <p>${service.description || 'Tratamiento de relajación y bienestar'}</p>

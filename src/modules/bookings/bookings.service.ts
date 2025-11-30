@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { addHours, format, parseISO, isAfter, isBefore, startOfDay } from 'date-fns';
-
-const prisma = new PrismaClient();
+import { prisma } from '../../common/utils/prisma';
 
 // Tipos de estado de reserva (usamos string literal en vez del enum de Prisma)
 type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';

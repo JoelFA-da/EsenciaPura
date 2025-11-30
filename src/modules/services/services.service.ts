@@ -1,6 +1,5 @@
-import { PrismaClient, Service } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { Service } from '@prisma/client';
+import { prisma } from '../../common/utils/prisma';
 
 // Tipo extendido para servicios con categoría
 export type ServiceWithCategory = Service & {

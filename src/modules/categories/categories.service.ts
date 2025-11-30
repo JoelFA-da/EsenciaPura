@@ -1,6 +1,5 @@
-import { PrismaClient, Category } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { Category } from '@prisma/client';
+import { prisma } from '../../common/utils/prisma';
 
 // Tipos para creación y actualización
 export interface CreateCategoryInput {

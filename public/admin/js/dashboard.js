@@ -201,7 +201,9 @@ function viewBooking(bookingId) {
 
 // ===== HELPERS =====
 function formatDate(dateString) {
-    const date = new Date(dateString);
+    // Usar solo la fecha sin conversión de timezone
+    const dateParts = dateString.split('T')[0].split('-'); // [YYYY, MM, DD]
+    const date = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
     return date.toLocaleDateString('es-CR', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 

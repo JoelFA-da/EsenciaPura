@@ -2,6 +2,12 @@
 
 const API_URL = window.location.origin; // Funciona local y en producción
 
+// Verificar autenticación al cargar
+const token = localStorage.getItem('token');
+if (!token) {
+    window.location.replace('/admin/login.html');
+}
+
 // Get auth token
 function getAuthHeaders() {
     const token = localStorage.getItem('token');

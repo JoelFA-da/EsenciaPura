@@ -2,6 +2,12 @@
 
 const API_URL = window.location.origin; // Funciona local y en producción
 
+// Verificar autenticación al cargar
+const token = localStorage.getItem('token');
+if (!token) {
+    window.location.replace('/admin/login.html');
+}
+
 // Get auth headers
 function getAuthHeaders() {
     const token = localStorage.getItem('token');
@@ -193,7 +199,9 @@ async function loadBookings(filters = {}) {
         window.bookingsData = sortedBookings;
 
         tbody.innerHTML = sortedBookings.map((booking, index) => {
-            const date = new Date(booking.date);
+            // Usar solo la fecha sin conversión de timezone
+            const dateParts = booking.date.split('T')[0].split('-'); // [YYYY, MM, DD]
+            const date = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
             const dateStr = date.toLocaleDateString('es-ES', { 
                 year: 'numeric', 
                 month: 'short', 

@@ -286,18 +286,18 @@ function generateCalendar() {
         html += '<div class="calendar-day empty"></div>';
     }
     
-    // Calendar days (next 14 days only, exclude Sundays)
+    // Calendar days (next 30 days only, exclude Sundays)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const maxDate = new Date(today);
-    maxDate.setDate(maxDate.getDate() + 14);
+    maxDate.setDate(maxDate.getDate() + 30);
     
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
         const dateStr = date.toISOString().split('T')[0];
         const dayOfWeek = date.getDay();
         
-        // Disable past dates, Sundays (0), and dates beyond 14 days
+        // Disable past dates, Sundays (0), and dates beyond 30 days
         const isPast = date < today;
         const isSunday = dayOfWeek === 0;
         const isBeyondLimit = date > maxDate;

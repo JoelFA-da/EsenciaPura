@@ -74,6 +74,84 @@ modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
 });
 
+// ===== IMAGE UPLOAD =====
+const uploadImageBtn = document.getElementById('upload-image-btn');
+const imageFileInput = document.getElementById('image-file-input');
+const uploadStatus = document.getElementById('upload-status');
+const categoryImageInput = document.getElementById('category-image');
+
+uploadImageBtn.addEventListener('click', () => {
+    imageFileInput.click();
+});
+
+imageFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        uploadStatus.innerHTML = '<span style="color: #dc3545;">⚠️ Por favor selecciona una imagen</span>';
+        return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        uploadStatus.innerHTML = '<span style="color: #dc3545;">⚠️ La imagen es muy grande (máx 5MB)</span>';
+        return;
+    }
+
+    uploadStatus.innerHTML = '<span style="color: #666;">⏳ Subiendo imagen...</span>';
+    uploadImageBtn.disabled = true;
+
+    try {
+        // Convert to base64
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        
+        reader.onload = async () => {
+            try {
+                const base64Image = reader.result;
+
+                // Upload to ImgBB via our API
+                const res = await fetch(`${API_URL}/upload/image`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ image: base64Image })
+                });
+
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.details || error.error || 'Error al subir imagen');
+                }
+
+                const data = await res.json();
+                
+                // Update input with URL
+                categoryImageInput.value = data.url;
+                uploadStatus.innerHTML = '<span style="color: #28a745;">✅ Imagen subida correctamente</span>';
+                
+                console.log('✅ Image uploaded:', data.url);
+            } catch (error) {
+                console.error('❌ Upload error:', error);
+                uploadStatus.innerHTML = `<span style="color: #dc3545;">❌ ${error.message}</span>`;
+            } finally {
+                uploadImageBtn.disabled = false;
+                // Clear file input
+                imageFileInput.value = '';
+            }
+        };
+
+        reader.onerror = () => {
+            uploadStatus.innerHTML = '<span style="color: #dc3545;">❌ Error al leer el archivo</span>';
+            uploadImageBtn.disabled = false;
+        };
+    } catch (error) {
+        console.error('❌ Error:', error);
+        uploadStatus.innerHTML = `<span style="color: #dc3545;">❌ ${error.message}</span>`;
+        uploadImageBtn.disabled = false;
+    }
+});
+
 // ===== LOAD CATEGORIES =====
 async function loadCategories() {
     console.log('📁 Loading categories...');

@@ -10,6 +10,7 @@ import authRouter from './modules/auth/auth.routes';
 import servicesRouter from './modules/services/services.routes';
 import bookingsRouter from './modules/bookings/bookings.routes';
 import { categoriesRoutes } from './modules/categories/categories.routes';
+import uploadRouter from './modules/upload/upload.routes';
 
 export function createApp() {
   const app = express();
@@ -23,7 +24,7 @@ export function createApp() {
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
         scriptSrcAttr: ["'unsafe-inline'"],
-        imgSrc: ["'self'", "data:"],
+        imgSrc: ["'self'", "data:", "https:", "http:"],
       },
     },
   }));
@@ -50,6 +51,7 @@ export function createApp() {
 
   // API Routes
   app.use('/auth', authRouter);
+  app.use('/upload', uploadRouter);
   app.use('/categories', categoriesRoutes);
   app.use('/services', servicesRouter);
   app.use('/bookings', bookingsRouter);
